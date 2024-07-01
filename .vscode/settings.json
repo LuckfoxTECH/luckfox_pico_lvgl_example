@@ -1,0 +1,22 @@
+{
+    "files.associations": {
+        "custom.h": "c",
+        "events_init.h": "c",
+        "errno.h": "c",
+        "optional": "c",
+        "system_error": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "ostream": "c",
+        "gui_guider.h": "c",
+        "stdio.h": "c",
+        "lvgl.h": "c",
+        "dirent.h": "c",
+        "evdev.h": "c",
+        "lv_drv_conf.h": "c",
+        "lv_conf.h": "c"
+    }
+}
