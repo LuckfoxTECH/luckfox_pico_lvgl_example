@@ -1,10 +1,23 @@
 ![luckfox](https://github.com/LuckfoxTECH/luckfox-pico/assets/144299491/cec5c4a5-22b9-4a9a-abb1-704b11651e88)
 # Luckfox Pico LVGL example
 [English](./README.md)
-    
-## 测试环境
-+ Luckfox Pico Ultra / Luckfox Pico Ultra W ( Buildroot 系统 )
-+ LF40-480480-ARK / LF40-720720-ARK ( 其他Framebuffer设备需要修改分辨率 )
++ 本例程基于 GUI-Guider、lvgl-8.3 设计界面
++ 本例程基于 lv_driver-8.1 驱动显示设备和输入设备
++ 专为`Luckfox Pico Ultra`系列开发板提供的图形界面开发例程
+
+## 支持平台
+|型号|操作系统|LF40-720720-ARK|LF40-480480-ARK|
+|-----------------------|---------|----|----|
+|Luckfox Pico Ultra     |Buildroot|支持|支持|
+|Luckfox Pico Ultra W   |BUildroot|支持|支持|
+
+## 实现效果
+![LVGL_main](images/LVGL_main.png)
++ **WIFI**：配置 Wi-Fi 的SSID和密码，在 Luckfox Pico Ultra 上不会显示该按键
++ **PAD**：触摸屏手写测试
++ **MUSIC**：音乐播放，仅支持 `.mp3` 格式，需要将播放的音乐文件放置到 `/music` 中
++ **GIF**：动图帧率测试
++ **OFF**：关闭程序
 
 ## 编译
 + 设置环境变量
@@ -28,10 +41,7 @@
     ./luckfox_lvgl_demo
     ```
 
-## 注意
-+ 音乐播放仅支持 MP3 格式，将要播放的音乐放到 `/music` 文件下程序会在启动后检索
-
-## 详细教程
+## 详细
 [RGB 屏幕](https://wiki.luckfox.com/zh/Luckfox-Pico/Luckfox-Pico-Ultra-RGB-Screen)
 
 
