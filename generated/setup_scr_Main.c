@@ -16,6 +16,7 @@
 
 
 extern int WIFI_ENABLE;
+extern int MUSIC_ENABLE;
 
 void setup_scr_Main(lv_ui *ui)
 {
@@ -304,7 +305,17 @@ void setup_scr_Main(lv_ui *ui)
 	
 		lv_obj_add_flag(ui->Main_Wifi_btn, LV_OBJ_FLAG_HIDDEN);
 	}
+
+	if((MUSIC_ENABLE == 2) && (WIFI_ENABLE == 0))
+	{
+		luckfox_lv_obj_set_pos(ui->Main_PAD_btn, 50, 370);
+		luckfox_lv_obj_set_pos(ui->Main_GIF_btn, 190, 370);
+		luckfox_lv_obj_set_pos(ui->Main_OFF, 335, 370);
 	
+		lv_obj_add_flag(ui->Main_Music_btn, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(ui->Main_Wifi_btn, LV_OBJ_FLAG_HIDDEN);
+	}
+
 	main_backend_init();
 	main_app_init();
 	
