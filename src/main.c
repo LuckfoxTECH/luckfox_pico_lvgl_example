@@ -23,14 +23,21 @@ int MUSIC_ENABLE;
 
 int main()
 {
+    int ret;
+
     /*GUI-Guider app Init*/
     custom_init();
-    
-    /* Get Chip WIIF Info */
-    luckfox_get_wifi_enable_info();
 
-    /* Check Music Dir */
-    luckfox_check_music_enable_info();
+    /* Get System Info */
+    ret = luckfox_get_system_info();
+    if(!ret)
+    {
+        /* Get Chip WIIF Info */
+        luckfox_get_wifi_enable_info();
+
+        /* Check Music Dir */
+        luckfox_check_music_enable_info();
+    }
 
     /* Get DRM Info */
     luckfox_get_drm_info(); // Set SCALE
@@ -44,7 +51,6 @@ int main()
     /*Linux FrameBuffer or DRM device init*/
     fbdev_init();
     //drm_init();
-
     
     /*Two buffer for LittlevGL to draw the screen's content*/
     lv_color_t buf0[disp_buf_size];
@@ -90,5 +96,6 @@ int main()
         wifi_backend_release();
     main_backend_release();
 
+    system("cat /dev/zero > /dev/fb0");
     return 0;
 }
