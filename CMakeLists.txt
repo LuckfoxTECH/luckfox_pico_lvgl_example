@@ -1,43 +1,67 @@
 cmake_minimum_required(VERSION 3.10)
 
 set(SDK_PATH $ENV{LUCKFOX_SDK_PATH})
+set(GLIBC_COMPILER $ENV{GLIBC_COMPILER})
 if(NOT SDK_PATH)
     message(WARNING "Please Set Luckfox-pico SDK Path. Such as:export LUCKFOX_SDK_PATH=/home/user/luckfox-pico")
-    return()
+    if (NOT GLIBC_COMPILER) 
+        message(WARNING "Please Set arm32 glibc compiler Path. Such as:export GLIBC_COMPILER=/opt/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-")
+        return()
+    else()
+        set(CMAKE_C_COMPILER    "${GLIBC_COMPILER}gcc")
+        set(CMAKE_CXX_COMPILER  "${GLIBC_COMPILER}g++")
+        option(SYSTEM_UBUNTU "Compiled for Ubuntu systems" ON)
+    endif()
+else()
+    set(CMAKE_C_COMPILER "${SDK_PATH}/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-gcc")
+    set(CMAKE_CXX_COMPILER "${SDK_PATH}/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-g++")
 endif()
-
-set(CMAKE_C_COMPILER "${SDK_PATH}/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-gcc"
-)
-set(CMAKE_CXX_COMPILER "${SDK_PATH}/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf-g++"
-)
 
 project(luckfox_lvgl_demo)
 
-
-include_directories( 
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/include/drm
-    ${CMAKE_SOURCE_DIR}/lib
-    ${CMAKE_SOURCE_DIR}/lib/lvgl
-    ${CMAKE_SOURCE_DIR}/lib/lv_drivers
-    ${CMAKE_SOURCE_DIR}/custom 
-    ${CMAKE_SOURCE_DIR}/generated 
-    ${CMAKE_SOURCE_DIR}/generated/guider_customer_fonts 
-    ${CMAKE_SOURCE_DIR}/generated/guider_fonts
-    ${CMAKE_SOURCE_DIR}/generated/images 
-)
-
-link_directories(${CMAKE_SOURCE_DIR}/lib/libdrm
-                 ${CMAKE_SOURCE_DIR}/lib/libcjson)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE) 
-SET(CMAKE_INSTALL_RPATH "/usr/lib")
-
+if(SYSTEM_UBUNTU)
+    include_directories( 
+        ${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/include/glibc/drm
+        ${CMAKE_SOURCE_DIR}/include/glibc/drm/libdrm
+        ${CMAKE_SOURCE_DIR}/include/glibc/cjson
+        ${CMAKE_SOURCE_DIR}/lib
+        ${CMAKE_SOURCE_DIR}/lib/lvgl
+        ${CMAKE_SOURCE_DIR}/lib/lv_drivers
+        ${CMAKE_SOURCE_DIR}/custom 
+        ${CMAKE_SOURCE_DIR}/generated 
+        ${CMAKE_SOURCE_DIR}/generated/guider_customer_fonts 
+        ${CMAKE_SOURCE_DIR}/generated/guider_fonts
+        ${CMAKE_SOURCE_DIR}/generated/images 
+    )
+    link_directories(${CMAKE_SOURCE_DIR}/lib/glibc/libdrm
+                     ${CMAKE_SOURCE_DIR}/lib/glibc/libcjson)
+    set(CMAKE_INSTALL_RPATH "$ORIGIN/lib")
+else()
+    include_directories( 
+        ${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/include/uclibc/drm
+        ${CMAKE_SOURCE_DIR}/include/uclibc/cjson
+        ${CMAKE_SOURCE_DIR}/lib
+        ${CMAKE_SOURCE_DIR}/lib/lvgl
+        ${CMAKE_SOURCE_DIR}/lib/lv_drivers
+        ${CMAKE_SOURCE_DIR}/custom 
+        ${CMAKE_SOURCE_DIR}/generated 
+        ${CMAKE_SOURCE_DIR}/generated/guider_customer_fonts 
+        ${CMAKE_SOURCE_DIR}/generated/guider_fonts
+        ${CMAKE_SOURCE_DIR}/generated/images 
+    )
+    link_directories(${CMAKE_SOURCE_DIR}/lib/uclibc/libdrm
+                     ${CMAKE_SOURCE_DIR}/lib/uclibc/libcjson)
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE) 
+    SET(CMAKE_INSTALL_RPATH "/usr/lib")
+endif()
 
 # lvgl
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/lvgl)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/lv_drivers)
-
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/lvgl EXCLUDE_FROM_ALL)
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/lv_drivers EXCLUDE_FROM_ALL)
 
 
 file(GLOB SRC ${CMAKE_SOURCE_DIR}/src/*.c
@@ -63,14 +87,25 @@ add_compile_options(
     -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wno-discarded-qualifiers -Wformat-security -Wno-ignored-qualifiers -Wno-sign-compare -std=c99
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/drm
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/cjson
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/lvgl/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/lvgl/font
-)
+if(SYSTEM_UBUNTU)
+    target_include_directories(${PROJECT_NAME} PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/glibc/drm
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/glibc/cjson
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/lvgl/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/lvgl/font
+    )
+else()
+    target_include_directories(${PROJECT_NAME} PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/uclibc/drm
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/uclibc/cjson
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/lvgl/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/lvgl/font
+    )
+endif()
 
 target_link_libraries(${PROJECT_NAME}
     #PRIVATE lvgl_examples
@@ -80,4 +115,11 @@ target_link_libraries(${PROJECT_NAME}
     cjson
 )
 
-
+if(SYSTEM_UBUNTU) 
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/install/${PROJECT_NAME}")
+    install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX})
+    file(GLOB LIBCJSON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/lib/glibc/libcjson/*.so*")  
+    file(GLOB LIBDRM_FILES "${CMAKE_CURRENT_SOURCE_DIR}/lib/glibc/libdrm/*.so*")  
+    install(FILES ${LIBCJSON_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)                    
+    install(FILES ${LIBDRM_FILES}   DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)                    
+endif()
