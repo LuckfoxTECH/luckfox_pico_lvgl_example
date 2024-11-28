@@ -243,7 +243,6 @@ void main_backend_release()
     lv_timer_del(main_time_update_timer);
 }
 
-
 /* Get hardware information */
 void luckfox_get_drm_info()
 {
@@ -297,6 +296,27 @@ void luckfox_get_drm_info()
     close(drm_fd);
 
 }
+
+int luckfox_get_system_info()
+{
+    FILE *fp = popen("cat /etc/os-release | grep \"Ubuntu\"", "r");
+    if (fp == NULL) {
+        perror("popen failed");
+    }
+
+    char buffer[128];
+    if (fgets(buffer, sizeof(buffer), fp) != NULL) {
+        pclose(fp);
+        WIFI_ENABLE = 0;
+        MUSIC_ENABLE = 2;
+
+        return 1;
+    }
+
+    pclose(fp);
+
+    return 0;
+};
 
 void luckfox_get_wifi_enable_info()
 {

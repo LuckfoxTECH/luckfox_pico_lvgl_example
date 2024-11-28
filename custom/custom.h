@@ -70,6 +70,7 @@ void luckfox_get_drm_info();
 void luckfox_get_wifi_enable_info();
 void luckfox_get_input_device_info();
 void luckfox_check_music_enable_info();
+int luckfox_get_system_info();
 
 /* Sketchpad */
 lv_obj_t * lv_sketchpad_create(lv_obj_t * parent);
