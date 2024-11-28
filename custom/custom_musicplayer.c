@@ -47,7 +47,7 @@ int slider_pressed = 0;
 /**********************
  *  GLOBAL VARIABLES
  **********************/
-lv_ui guider_ui;
+extern lv_ui guider_ui;
 /**********************
  *  STATIC FUNCTIONS
  **********************/
