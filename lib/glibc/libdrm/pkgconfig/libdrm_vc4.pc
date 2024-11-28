@@ -1,0 +1,9 @@
+prefix=/home/cro/doc/libdrm/libdrm-2.4.122/build/../install
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libdrm_vc4
+Description: Userspace interface to vc4 kernel DRM services
+Version: 2.4.122
+Requires.private: libdrm
+Cflags: -I${includedir}

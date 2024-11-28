@@ -1,0 +1,10 @@
+libdir=/home/cro/doc/cjson/cJSON-1.7.15/install/lib
+includedir=/home/cro/doc/cjson/cJSON-1.7.15/install/include
+
+Name: libcjson_utils
+Version: 1.7.15
+Description: An implementation of JSON Pointer, Patch and Merge Patch based on cJSON.
+URL: https://github.com/DaveGamble/cJSON
+Libs: -L${libdir} -lcjson_utils
+Cflags: -I${includedir} -I${includedir}/cjson
+Requires: libcjson
