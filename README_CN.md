@@ -8,21 +8,24 @@
 ## 支持平台
 |型号|操作系统|LF40-720720-ARK|LF40-480480-ARK|
 |-----------------------|---------|----|----|
-|Luckfox Pico Ultra     |Buildroot|支持|支持|
-|Luckfox Pico Ultra W   |BUildroot|支持|支持|
+|Luckfox Pico Ultra     |Buildroot/Ubuntu|支持|支持|
+|Luckfox Pico Ultra W   |BUildroot/Ubuntu|支持|支持|
 
 ## 实现效果
 ![LVGL_main](images/LVGL_main.png)
+
+**Ubuntu 系统目前仅支持PAD和GIF界面**
 + **WIFI**：配置 Wi-Fi 的SSID和密码，在 Luckfox Pico Ultra 上不会显示该按键
 + **PAD**：触摸屏手写测试
 + **MUSIC**：音乐播放，仅支持 `.mp3` 格式，需要将播放的音乐文件放置到 `/music` 中
 + **GIF**：动图帧率测试
 + **OFF**：关闭程序
 
-## 编译
+## Buildroot
+### 编译
 + 设置环境变量
     ```
-    export LUCKFOX_SDK_PATH=< luckfox-pico Sdk 地址>
+    export LUCKFOX_SDK_PATH=< luckfox-pico Sdk 地址 >
     ```
     **注意**：使用绝对地址。
 + 使用 CMake 编译获取可执行程序 
@@ -33,10 +36,36 @@
     make -j
     ```
 
-## 运行
+### 运行
 + 将编译生成的可执行程序 `luckfox_lvgl_demo` 上传到 Luckfox Pico 上(可使用adb ssh等方式)
-+ 设置可执行权限后执行
++ 板端设置可执行权限后执行
     ```
+    chmod a+x luckfox_lvgl_demo
+    ./luckfox_lvgl_demo
+    ```
+## Ubuntu
+### 编译
++ 设置环境变量
+    ```
+    export GLIBC_COMPILER=< glibc 交叉编译工具地址和前缀名 >
+    # 例如：export GLIBC_COMPILER=/opt/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-  
+    ```
+    **注意**：使用绝对地址。    
++ 使用 CMake 编译获取可执行程序 
+    ```
+    mkdir build
+    cd build
+    cmake ..
+    make -j
+    make install
+    ```
+### 运行
++ 将编译生成的文件夹 `< Project Path >/install/luckfox_lvgl_demo` **整个**上传到 Luckfox Pico 上(可使用adb ssh等方式)
+    
+    **注意**：由于运行需要依赖动态库，上传文件时可能会丢失软链接，建议压缩上传。
++ 板端设置可执行权限后执行
+    ```
+    cd luckfox_lvgl_demo
     chmod a+x luckfox_lvgl_demo
     ./luckfox_lvgl_demo
     ```
